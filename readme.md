@@ -2,6 +2,12 @@
 
 🔥Firebase Firestore hooks & components to supercharge React and React Native.
 
+# Table of Contents
+
+- `useFuego`
+- `connectFuego`
+- `GetFuego`
+
 # `useFuego`
 
 React hook that turns any firestore query into a responsive react / react native component.
