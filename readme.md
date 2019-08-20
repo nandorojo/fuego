@@ -14,11 +14,11 @@ npm i --save @nandorojo/fuego
 
 # `useFuego`
 
-React hook that turns any firestore query into a responsive react / react native component.
+React hook that turns any firestore query into a stateful component.
 
 ## `useFuego` usecases
 
-### **Listen for live changes to a conversation**
+### **Build real-time chat in ten lines of code**
 
 Fuego automatically handles removing the listeners when a component unmounts.
 
@@ -26,29 +26,31 @@ Fuego automatically handles removing the listeners when a component unmounts.
 const Chat = ({ roomId }) => {
   const { data, loading } = useFuego({
     path: `chatrooms/${roomId}/messages`,
-    // listen to updates
+    // subscribe to live to updates
     listen: true
   });
 
-  if (loading) return <ActivityIndicator />;
+  if (loading) return <Loading />;
 
   return data.map(message => <Message text={message.text} id={message.id} />);
 };
 ```
 
-### **Query a collection of users**
+### **Query users instantly**
+
+Don't worry about parsing through firestore's `querySnapshot`. fuego handles that for you.
 
 ```javascript
 const Users = () => {
   const { data, loading } = useFuego({ path: 'users' });
 
-  if (loading) return <ActivityIndicator />;
+  if (loading) return <Loading />;
 
   return data.map(user => <User name={user.name} id={user.id} />);
 };
 ```
 
-### **Query a more specific collection of users**
+### **Perform complex query of **
 
 ```javascript
 const Users = () => {
@@ -58,7 +60,7 @@ const Users = () => {
     where: ['name', '==', 'Fred Fuegington']
   });
 
-  if (loading) return <ActivityIndicator />;
+  if (loading) return <Loading />;
 
   return data.map(user => <User name={user.name} id={user.id} />);
 };
