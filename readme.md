@@ -8,11 +8,9 @@ npm i --save @nandorojo/fuego
 
 _Requires react 16.8.3 or higher._
 
-# `useFuego`
+## `useFuego`
 
 React hook that turns any firestore query into a stateful component.
-
-## Example usecases
 
 ### **Query users instantly**
 
