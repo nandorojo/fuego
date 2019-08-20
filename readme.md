@@ -6,17 +6,27 @@
 npm i --save @nandorojo/fuego
 ```
 
-# Table of Contents
-
-- `useFuego`
-- `connectFuego`
-- `GetFuego`
+_Requires react 16.8.3 or higher._
 
 # `useFuego`
 
 React hook that turns any firestore query into a stateful component.
 
-## `useFuego` usecases
+## Example usecases
+
+### **Query users instantly**
+
+Don't worry about parsing through firestore's `querySnapshot`. Fuego handles that for you.
+
+```javascript
+const Users = () => {
+  const { data, loading } = useFuego({ path: 'users' });
+
+  if (loading) return <Loading />;
+
+  return data.map(user => <User name={user.name} id={user.id} />);
+};
+```
 
 ### **Build real-time chat in ten lines of code**
 
@@ -33,20 +43,6 @@ const Chat = ({ roomId }) => {
   if (loading) return <Loading />;
 
   return data.map(message => <Message text={message.text} id={message.id} />);
-};
-```
-
-### **Query users instantly**
-
-Don't worry about parsing through firestore's `querySnapshot`. fuego handles that for you.
-
-```javascript
-const Users = () => {
-  const { data, loading } = useFuego({ path: 'users' });
-
-  if (loading) return <Loading />;
-
-  return data.map(user => <User name={user.name} id={user.id} />);
 };
 ```
 
