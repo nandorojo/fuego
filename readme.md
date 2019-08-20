@@ -13,15 +13,27 @@ _Requires react 16.8.3 or higher to support hooks._
 Wrap your `App.js` component with the `FuegoProvider`. Pass a `Fuego` instance as a prop. See [firebase's website](https://firebase.google.com/docs/web/setup#config-object) for steps on getting your `firebaseConfig`.
 
 ```javascript
-import { FuegoProvider, Fuego } from '@nandorojo/fuego';
+import { FuegoProvider, Fuego } from '@nandorojo/fuego'
 
-const firebaseConfig = {};
+const firebaseConfig = {
+  apiKey: 'api-key',
+  authDomain: 'project-id.firebaseapp.com',
+  databaseURL: 'https://project-id.firebaseio.com',
+  projectId: 'project-id',
+  storageBucket: 'project-id.appspot.com',
+  messagingSenderId: 'sender-id',
+  appID: 'app-id'
+}
+
+const fuego = new Fuego(firebaseConfig)
 
 export default () => {
-  <FuegoProvider>
-    <App />
-  </FuegoProvider>;
-};
+  return (
+    <FuegoProvider fuego={fuego}>
+      <App />
+    </FuegoProvider>
+  )
+}
 ```
 
 ## `useFuego`
@@ -36,12 +48,12 @@ Don't worry about parsing through firestore's `querySnapshot`. Fuego handles tha
 
 ```javascript
 const Users = () => {
-  const { data, loading } = useFuego({ path: 'users' });
+  const { data, loading } = useFuego({ path: 'users' })
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading />
 
-  return data.map(user => <User name={user.name} id={user.id} />);
-};
+  return data.map(user => <User name={user.name} id={user.id} />)
+}
 ```
 
 ### Real-time chat in ten lines of code
@@ -54,12 +66,12 @@ const Chat = ({ roomId }) => {
     path: `chatrooms/${roomId}/messages`,
     // subscribe to live to updates
     listen: true
-  });
+  })
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading />
 
-  return data.map(message => <Message text={message.text} id={message.id} />);
-};
+  return data.map(message => <Message text={message.text} id={message.id} />)
+}
 ```
 
 ### Query popular memes
@@ -71,10 +83,10 @@ const Users = () => {
     limit: 20,
     where: ['popularity', '>=', '90'],
     orderBy: 'popularity'
-  });
+  })
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading />
 
-  return data.map(user => <User name={user.name} id={user.id} />);
-};
+  return data.map(user => <User name={user.name} id={user.id} />)
+}
 ```
