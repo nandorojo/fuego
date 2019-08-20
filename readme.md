@@ -13,15 +13,13 @@ _Requires react 16.8.3 or higher to support hooks._
 Wrap your `App.js` component with the `FuegoProvider`;
 
 ```javascript
-...
-import { FuegoProvider } from '@nandorojo/fuego'
+import { FuegoProvider } from '@nandorojo/fuego';
 
 export default () => {
-	<FuegoProvider>
-		<App />
-	</FuegoProvider>
-}
-
+  <FuegoProvider>
+    <App />
+  </FuegoProvider>;
+};
 ```
 
 ## `useFuego`
