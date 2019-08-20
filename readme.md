@@ -4,12 +4,19 @@
 
 # `useFuego`
 
-## **Listen for live changes to a conversation**
+React hook that turns any firestore query into a responsive react / react native component.
+
+## `useFuego` usecases
+
+### **Listen for live changes to a conversation**
+
+Fuego automatically handles removing the listeners when a component unmounts.
 
 ```javascript
-const Messages = () => {
+const Chat = ({ roomId }) => {
   const { data, loading } = useFuego({
-    path: 'chatrooms/room_1/messages',
+    path: `chatrooms/${roomId}/messages`,
+    // listen to updates
     listen: true
   });
 
@@ -19,7 +26,7 @@ const Messages = () => {
 };
 ```
 
-## **Query a collection of users**
+### **Query a collection of users**
 
 ```javascript
 const Users = () => {
@@ -31,7 +38,7 @@ const Users = () => {
 };
 ```
 
-## **Query a more specific collection of users**
+### **Query a more specific collection of users**
 
 ```javascript
 const Users = () => {
