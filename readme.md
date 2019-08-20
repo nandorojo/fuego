@@ -1,6 +1,6 @@
 # fuego
 
-🔥Firebase Firestore hooks & components to supercharge React and React Native.
+🔥 Firebase Firestore hooks & components for React and React Native.
 
 ```
 npm i --save @nandorojo/fuego
@@ -49,7 +49,7 @@ const Chat = ({ roomId }) => {
 ### Query popular memes
 
 ```javascript
-const Users = () => {
+const Memes = () => {
   const { data, loading } = useFuego({
     path: 'memes',
     limit: 20,
@@ -59,7 +59,7 @@ const Users = () => {
 
   if (loading) return <Loading />
 
-  return data.map(user => <User name={user.name} id={user.id} />)
+  return data.map(user => <Meme url={meme.url} id={meme.id} />)
 }
 ```
 
@@ -73,6 +73,7 @@ _See [firebase's website](https://firebase.google.com/docs/web/setup#config-obje
 // ...other imports
 import { FuegoProvider, Fuego } from '@nandorojo/fuego'
 
+// replace with your custom firebaseConfig
 const firebaseConfig = {
   apiKey: 'api-key',
   authDomain: 'project-id.firebaseapp.com',
