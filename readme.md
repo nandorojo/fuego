@@ -8,42 +8,11 @@ npm i --save @nandorojo/fuego
 
 _Requires react 16.8.3 or higher to support hooks._
 
-## Setup
-
-Wrap your `App.js` component with the `FuegoProvider` component. Pass a `Fuego` instance as a prop.
-
-_See [firebase's website](https://firebase.google.com/docs/web/setup#config-object) for steps on getting your `firebaseConfig`._
-
-```javascript
-// ...other imports
-import { FuegoProvider, Fuego } from '@nandorojo/fuego'
-
-const firebaseConfig = {
-  apiKey: 'api-key',
-  authDomain: 'project-id.firebaseapp.com',
-  databaseURL: 'https://project-id.firebaseio.com',
-  projectId: 'project-id',
-  storageBucket: 'project-id.appspot.com',
-  messagingSenderId: 'sender-id',
-  appID: 'app-id'
-}
-
-const fuego = new Fuego(firebaseConfig)
-
-export default () => {
-  return (
-    <FuegoProvider fuego={fuego}>
-      <App />
-    </FuegoProvider>
-  )
-}
-```
-
 ## `useFuego`
 
-See [`useFuego` docs]() for custom options.
-
 React hook that turns any firestore query into a stateful component.
+
+See [`useFuego` docs]() for custom options.
 
 ### Query users
 
@@ -91,5 +60,36 @@ const Users = () => {
   if (loading) return <Loading />
 
   return data.map(user => <User name={user.name} id={user.id} />)
+}
+```
+
+## Setup
+
+Wrap your `App.js` component with the `FuegoProvider` component. Pass a `Fuego` instance as a prop.
+
+_See [firebase's website](https://firebase.google.com/docs/web/setup#config-object) for steps on getting your `firebaseConfig`._
+
+```javascript
+// ...other imports
+import { FuegoProvider, Fuego } from '@nandorojo/fuego'
+
+const firebaseConfig = {
+  apiKey: 'api-key',
+  authDomain: 'project-id.firebaseapp.com',
+  databaseURL: 'https://project-id.firebaseio.com',
+  projectId: 'project-id',
+  storageBucket: 'project-id.appspot.com',
+  messagingSenderId: 'sender-id',
+  appID: 'app-id'
+}
+
+const fuego = new Fuego(firebaseConfig)
+
+export default () => {
+  return (
+    <FuegoProvider fuego={fuego}>
+      <App />
+    </FuegoProvider>
+  )
 }
 ```
