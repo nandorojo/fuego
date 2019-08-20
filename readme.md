@@ -10,10 +10,12 @@ _Requires react 16.8.3 or higher to support hooks._
 
 ## Setup
 
-Wrap your `App.js` component with the `FuegoProvider`;
+Wrap your `App.js` component with the `FuegoProvider`. Pass a `Fuego` instance as a prop. See [firebase's website](https://firebase.google.com/docs/web/setup#config-object) for steps on getting your `firebaseConfig`.
 
 ```javascript
-import { FuegoProvider } from '@nandorojo/fuego';
+import { FuegoProvider, Fuego } from '@nandorojo/fuego';
+
+const firebaseConfig = {};
 
 export default () => {
   <FuegoProvider>
