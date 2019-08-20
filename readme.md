@@ -2,6 +2,10 @@
 
 🔥Firebase Firestore hooks & components to supercharge React and React Native.
 
+```
+npm i --save @nandorojo/fuego
+```
+
 # Table of Contents
 
 - `useFuego`
