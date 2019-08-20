@@ -1,3 +1,9 @@
+# fuego
+
+🔥Firebase Firestore hooks & components to supercharge React and React Native.
+
+# `useFuego`
+
 ## **Listen for live changes to a conversation**
 
 ```javascript
