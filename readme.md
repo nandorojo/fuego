@@ -6,13 +6,31 @@
 npm i --save @nandorojo/fuego
 ```
 
-_Requires react 16.8.3 or higher._
+_Requires react 16.8.3 or higher to support hooks._
+
+## Setup
+
+Wrap your `App.js` component with the `FuegoProvider`;
+
+```javascript
+...
+import { FuegoProvider } from '@nandorojo/fuego'
+
+export default () => {
+	<FuegoProvider>
+		<App />
+	</FuegoProvider>
+}
+
+```
 
 ## `useFuego`
 
+See [`useFuego` docs]() for custom options.
+
 React hook that turns any firestore query into a stateful component.
 
-### **Query users instantly**
+### Query users
 
 Don't worry about parsing through firestore's `querySnapshot`. Fuego handles that for you.
 
@@ -26,7 +44,7 @@ const Users = () => {
 };
 ```
 
-### **Build real-time chat in ten lines of code**
+### Real-time chat in ten lines of code
 
 Fuego automatically handles removing the listeners when a component unmounts.
 
@@ -44,14 +62,15 @@ const Chat = ({ roomId }) => {
 };
 ```
 
-### **Perform complex query of **
+### Query popular memes
 
 ```javascript
 const Users = () => {
   const { data, loading } = useFuego({
-    path: 'users',
-    limit: 10,
-    where: ['name', '==', 'Fred Fuegington']
+    path: 'memes',
+    limit: 20,
+    where: ['popularity', '>=', '90'],
+    orderBy: 'popularity'
   });
 
   if (loading) return <Loading />;
