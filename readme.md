@@ -2,7 +2,9 @@
 
 🔥 Firebase Firestore hooks & components for React and React Native.
 
-Fuego has out-of-the-box optimization to prevent memory leaks and perfomance bugs for apps that use multiple Firestore subscriptions/listeners at once.
+⚡️ Provides out-of-the-box optimization to prevent memory leaks from multiple listeners/subscriptions.
+
+## Install
 
 ```
 npm i --save @nandorojo/fuego
