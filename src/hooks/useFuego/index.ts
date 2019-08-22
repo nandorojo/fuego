@@ -42,7 +42,7 @@ function useFuego<DataModel>(
   ]
 
   // ref generated from the query
-  const ref = useRef<FirestoreRefType>()
+  const ref = useRef<FirestoreRefType | null>(null)
 
   useEffect(() => {
     let listenerName = ''

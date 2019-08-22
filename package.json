@@ -6,10 +6,10 @@
   "module": "lib/module/index",
   "react-native": "lib/module/index",
   "types": "lib/typescript/index",
-  "homepage": "https://github.com/nandorojo/shared-animations",
+  "homepage": "https://github.com/nandorojo/fuego",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nandorojo/shared-animations"
+    "url": "https://github.com/nandorojo/fuego"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
