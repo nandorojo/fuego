@@ -5,12 +5,13 @@ import {
   QueryHookResponse,
   QueryDataHandler
 } from './types'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import FuegoQuery from '../../FuegoQuery'
 import {
   DocumentReference,
   CollectionReference
 } from '@firebase/firestore-types'
+import { FirestoreRefType } from '../../FuegoQuery/types'
 
 function useFuego<DataModel>(
   { path, where, orderBy, limit, listen = false }: UseQueryConfig,
@@ -40,25 +41,33 @@ function useFuego<DataModel>(
     handleError || setErrorState
   ]
 
+  // ref generated from the query
+  const ref = useRef<FirestoreRefType>()
+
   useEffect(() => {
     let listenerName = ''
 
     const init = async () => {
       try {
-        if (!path) return
+        if (!path) {
+          return console.warn(
+            'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
+          )
+        }
         const query = new FuegoQuery({ path, where, orderBy, limit })
         listenerName = query.getQueryStringId()
-        const { ref, isDocument } = query.getRef(db)
+        const { isDocument, ref: dbRef } = query.getRef(db)
+        ref.current = dbRef
 
         if (!listen) {
           if (isDocument) {
-            const doc = await (ref as DocumentReference).get()
+            const doc = await (ref.current as DocumentReference).get()
             setData({
               ...doc.data(),
               id: doc.id
             })
           } else {
-            const response = await (ref as CollectionReference).get()
+            const response = await (ref.current as CollectionReference).get()
             const r: object[] = []
             response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
             setData(r)
@@ -71,7 +80,7 @@ function useFuego<DataModel>(
           } else if (isDocument) {
             addListener(
               listenerName,
-              (ref as DocumentReference).onSnapshot((doc: any) => {
+              (ref.current as DocumentReference).onSnapshot((doc: any) => {
                 setData({ ...doc.data(), id: doc.id })
                 setLoading(false)
               })
@@ -79,7 +88,7 @@ function useFuego<DataModel>(
           } else {
             addListener(
               listenerName,
-              (ref as CollectionReference).onSnapshot(querySnapshot => {
+              (ref.current as CollectionReference).onSnapshot(querySnapshot => {
                 const array: object[] = []
                 querySnapshot.forEach(doc => {
                   array.push({
@@ -96,24 +105,20 @@ function useFuego<DataModel>(
       } catch (e) {
         setError(e)
         console.error(
-          '@nandorojo/fuego: \nuseQuery failed. \nError: ',
+          'fuego error: \nuseFuego failed. \nError: ',
           JSON.stringify(e)
         )
       }
     }
     init()
     return () => {
-      // function listenerIsFunction(l: typeof listener): l is () => void {
-      // 	return l && typeof (l as () => void) === 'function';
-      // }
-      // if (listenerIsFunction(listener)) (listener as () => void)();
       if (unsubscribeOnUnmount) {
         removeListener(listenerName)
       }
     }
   }, [path, listen, where, orderBy])
 
-  return { data, loading, error, db }
+  return { data, loading, error, db, ref: ref.current as FirestoreRefType }
 }
 
 export default useFuego

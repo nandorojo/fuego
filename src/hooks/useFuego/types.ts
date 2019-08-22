@@ -1,4 +1,4 @@
-import { FuegoQueryConfig } from '../../FuegoQuery/types'
+import { FuegoQueryConfig, FirestoreRefType } from '../../FuegoQuery/types'
 import { FirebaseError } from 'firebase'
 import { FirestoreDbType } from '../../Fuego/types'
 
@@ -15,6 +15,7 @@ export interface QueryHookResponse<DataModel> {
   loading: boolean
   error: Error
   db: FirestoreDbType
+  ref: FirestoreRefType
 }
 
 export interface QueryDataHandler<DataModel> {
