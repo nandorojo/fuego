@@ -5,42 +5,20 @@ import {
   WhereType,
   WhereArray,
   OrderByType,
-  FirestoreRefType
+  FirestoreRefType,
+  FuegoQueryInitType
 } from './types'
 import { FirestoreDbType } from '../Fuego/types'
-import { CollectionReference } from '@firebase/firestore-types'
+import {
+  CollectionReference,
+  DocumentReference
+} from '@firebase/firestore-types'
 
 export default class {
-  private path: FuegoQueryConfig['path']
-  private where: FuegoQueryConfig['where']
-  private orderBy: FuegoQueryConfig['orderBy']
-  private limit: FuegoQueryConfig['limit']
-  private startAt: FuegoQueryConfig['startAt']
-  private endAt: FuegoQueryConfig['endAt']
-  private startAfter: FuegoQueryConfig['startAfter']
-  private endBefore: FuegoQueryConfig['endBefore']
   private config: FuegoQueryConfig
 
   constructor(config: FuegoQueryConfig) {
     this.config = config
-    const {
-      path,
-      where,
-      orderBy,
-      limit,
-      startAt,
-      endAt,
-      startAfter,
-      endBefore
-    } = config
-    this.path = path
-    this.where = where
-    this.orderBy = orderBy
-    this.limit = limit
-    this.startAt = startAt
-    this.endAt = endAt
-    this.startAfter = startAfter
-    this.endBefore = endBefore
   }
 
   getRef(db: FirestoreDbType) {
@@ -54,7 +32,7 @@ export default class {
       endAt,
       startAfter,
       endBefore
-    } = this
+    } = this.config
 
     let isDocument = false
     try {
@@ -125,7 +103,7 @@ export default class {
     return { ref, isDocument }
   }
   getQueryStringId() {
-    const sorted = JSON.stringify(
+    return JSON.stringify(
       Object.keys(this.config)
         .sort()
         .map(configType => {
@@ -134,6 +112,83 @@ export default class {
           }
         })
     )
-    return sorted
+  }
+  async handle<DataModel>({
+    listenerNameRef,
+    context,
+    dbRef,
+    listen = false,
+    notifyOnNetworkStatusChange = true,
+    setData,
+    setLoading,
+    setError
+  }: FuegoQueryInitType<DataModel>) {
+    const { path } = this.config
+    try {
+      if (!path) {
+        return console.warn(
+          'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
+        )
+      }
+      const { db, addListener, doesListenerExist, getListener } = context
+      listenerNameRef.current = this.getQueryStringId()
+      const { isDocument, ref } = this.getRef(db)
+      dbRef.current = ref
+
+      if (!listen) {
+        if (isDocument) {
+          const doc = await (dbRef.current as DocumentReference).get()
+          setData({
+            ...doc.data(),
+            id: doc.id
+          })
+        } else {
+          const response = await (dbRef.current as CollectionReference).get()
+          const r: object[] = []
+          response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
+          setData(r)
+        }
+        if (notifyOnNetworkStatusChange) setLoading(false)
+      } else {
+        const listenerExists = doesListenerExist(listenerNameRef.current)
+        if (listenerExists) {
+          console.warn(
+            "Warning, you're trying to initialize the same listener twice. This applies to the firestore query: ",
+            this.config.path
+          )
+          // TODO fix this issue where having a listener already existent leads to no data...
+          getListener(listenerNameRef.current)
+        } else if (isDocument) {
+          addListener(
+            listenerNameRef.current,
+            (dbRef.current as DocumentReference).onSnapshot((doc: any) => {
+              setData({ ...doc.data(), id: doc.id })
+              if (notifyOnNetworkStatusChange) setLoading(false)
+            })
+          )
+        } else {
+          addListener(
+            listenerNameRef.current,
+            (dbRef.current as CollectionReference).onSnapshot(querySnapshot => {
+              const array: object[] = []
+              querySnapshot.forEach(doc => {
+                array.push({
+                  ...doc.data(),
+                  id: doc.id
+                })
+              })
+              setData(array as object[])
+              if (notifyOnNetworkStatusChange) setLoading(false)
+            })
+          )
+        }
+      }
+    } catch (e) {
+      setError(e)
+      console.error(
+        'fuego error: \nuseFuego failed. \nError: ',
+        JSON.stringify(e)
+      )
+    }
   }
 }

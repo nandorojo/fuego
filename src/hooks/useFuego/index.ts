@@ -25,13 +25,14 @@ function useFuego<DataModel>(
     unsubscribeOnUnmount = true,
     notifyOnNetworkStatusChange = true
   } = options
+  const context = useFuegoContext()
   const {
     db,
     addListener,
     removeListener,
     doesListenerExist,
     getListener
-  } = useFuegoContext()
+  } = context
   const [data, setDataState] = useState<DataModel | QueryDataModel>(null)
   const [loading, setLoadingState] = useState(true)
   const [error, setErrorState] = useState<
@@ -46,77 +47,85 @@ function useFuego<DataModel>(
 
   // ref generated from the query
   const ref = useRef<FirestoreRefType | null>(null)
+  const listenerName = useRef('')
 
   useEffect(() => {
-    let listenerName = ''
+    new FuegoQuery(query).handle<DataModel>({
+      listen,
+      notifyOnNetworkStatusChange,
+      setData,
+      setLoading,
+      setError,
+      listenerNameRef: listenerName,
+      dbRef: ref,
+      context
+    })
+    // const init = async () => {
+    //   try {
+    //     if (!path) {
+    //       return console.warn(
+    //         'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
+    //       )
+    //     }
+    //     listenerName.current = fuego.getQueryStringId()
+    //     const { isDocument, ref: dbRef } = fuego.getRef(db)
+    //     ref.current = dbRef
 
-    const init = async () => {
-      try {
-        if (!path) {
-          return console.warn(
-            'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
-          )
-        }
-        const fuego = new FuegoQuery(query)
-        listenerName = fuego.getQueryStringId()
-        const { isDocument, ref: dbRef } = fuego.getRef(db)
-        ref.current = dbRef
-
-        if (!listen) {
-          if (isDocument) {
-            const doc = await (ref.current as DocumentReference).get()
-            setData({
-              ...doc.data(),
-              id: doc.id
-            })
-          } else {
-            const response = await (ref.current as CollectionReference).get()
-            const r: object[] = []
-            response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
-            setData(r)
-          }
-          if (notifyOnNetworkStatusChange) setLoading(false)
-        } else {
-          const listenerExists = doesListenerExist(listenerName)
-          if (listenerExists) {
-            getListener(listenerName)
-          } else if (isDocument) {
-            addListener(
-              listenerName,
-              (ref.current as DocumentReference).onSnapshot((doc: any) => {
-                setData({ ...doc.data(), id: doc.id })
-                if (notifyOnNetworkStatusChange) setLoading(false)
-              })
-            )
-          } else {
-            addListener(
-              listenerName,
-              (ref.current as CollectionReference).onSnapshot(querySnapshot => {
-                const array: object[] = []
-                querySnapshot.forEach(doc => {
-                  array.push({
-                    ...doc.data(),
-                    id: doc.id
-                  })
-                })
-                setData(array as object[])
-                if (notifyOnNetworkStatusChange) setLoading(false)
-              })
-            )
-          }
-        }
-      } catch (e) {
-        setError(e)
-        console.error(
-          'fuego error: \nuseFuego failed. \nError: ',
-          JSON.stringify(e)
-        )
-      }
-    }
-    init()
+    //     if (!listen) {
+    //       if (isDocument) {
+    //         const doc = await (ref.current as DocumentReference).get()
+    //         setData({
+    //           ...doc.data(),
+    //           id: doc.id
+    //         })
+    //       } else {
+    //         const response = await (ref.current as CollectionReference).get()
+    //         const r: object[] = []
+    //         response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
+    //         setData(r)
+    //       }
+    //       if (notifyOnNetworkStatusChange) setLoading(false)
+    //     } else {
+    //       const listenerExists = doesListenerExist(listenerName.current)
+    //       if (listenerExists) {
+    //         getListener(listenerName.current)
+    //       } else if (isDocument) {
+    //         addListener(
+    //           listenerName.current,
+    //           (ref.current as DocumentReference).onSnapshot((doc: any) => {
+    //             setData({ ...doc.data(), id: doc.id })
+    //             if (notifyOnNetworkStatusChange) setLoading(false)
+    //           })
+    //         )
+    //       } else {
+    //         addListener(
+    //           listenerName.current,
+    //           (ref.current as CollectionReference).onSnapshot(querySnapshot => {
+    //             const array: object[] = []
+    //             querySnapshot.forEach(doc => {
+    //               array.push({
+    //                 ...doc.data(),
+    //                 id: doc.id
+    //               })
+    //             })
+    //             setData(array as object[])
+    //             if (notifyOnNetworkStatusChange) setLoading(false)
+    //           })
+    //         )
+    //       }
+    //     }
+    //   } catch (e) {
+    //     setError(e)
+    //     console.error(
+    //       'fuego error: \nuseFuego failed. \nError: ',
+    //       JSON.stringify(e)
+    //     )
+    //   }
+    // }
+    // init()
     return () => {
       if (unsubscribeOnUnmount && listenerName) {
-        removeListener(listenerName)
+        removeListener(listenerName.current)
       }
     }
   }, [...Object.keys(query), ...Object.keys(options)])

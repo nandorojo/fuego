@@ -8,20 +8,27 @@ export interface UseQueryConfig extends FuegoQueryConfig {
 
 export type QueryDataModel = object[] | object | null
 
-type Error = null | FirebaseError | string
+export type QueryError = null | FirebaseError | string
 
 export interface QueryHookResponse<DataModel> {
   data: DataModel | QueryDataModel
   loading: boolean
-  error: Error
+  error: QueryError
   db: FirestoreDbType
   ref: FirestoreRefType
 }
 
+export type HandleQueryData<DataModel> = (
+  data: DataModel | QueryDataModel
+) => void
+
+export type HandleLoading = (loading: boolean) => void
+export type HandleError = (error: QueryError) => void
+
 export interface QueryDataHandler<DataModel> {
-  handleData?: (data: DataModel | QueryDataModel) => void
-  handleLoading?: (loading: boolean) => void
-  handleError?: (error: Error) => void
+  handleData?: HandleQueryData<DataModel>
+  handleLoading?: HandleLoading
+  handleError?: HandleError
   // remove listener when the component unmounts
   unsubscribeOnUnmount?: boolean
   notifyOnNetworkStatusChange?: boolean

@@ -5,7 +5,6 @@ import { FuegoConfig } from './types'
 import { FuegoContextProps } from '../FuegoContext/types'
 
 export default class Fuego {
-  // public db: firebase.firestore.Firestore
   public db: FuegoContextProps['db']
   public auth: FuegoContextProps['auth']
   public firebase: FuegoContextProps['firebase']
