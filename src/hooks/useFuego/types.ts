@@ -24,4 +24,5 @@ export interface QueryDataHandler<DataModel> {
   handleError?: (error: Error) => void
   // remove listener when the component unmounts
   unsubscribeOnUnmount?: boolean
+  notifyOnNetworkStatusChange?: boolean
 }

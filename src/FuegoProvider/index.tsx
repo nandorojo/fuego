@@ -49,8 +49,7 @@ const FuegoProvider: FunctionComponent<FuegoProviderProps> = ({
   }
 
   const value: FuegoContextProps = {
-    db: fuego.db,
-    auth: fuego.auth,
+    ...fuego,
     addListener,
     removeListener,
     doesListenerExist,

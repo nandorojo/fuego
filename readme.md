@@ -7,7 +7,7 @@
 ## Install
 
 ```
-npm i --save @nandorojo/fuego
+npm i --save @nandorojo/fuego firebase
 ```
 
 _Requires react 16.8.3 or higher to support hooks._

@@ -14,14 +14,17 @@ import {
 import { FirestoreRefType } from '../../FuegoQuery/types'
 
 function useFuego<DataModel>(
-  { path, where, orderBy, limit, listen = false }: UseQueryConfig,
-  {
+  query: UseQueryConfig,
+  options: QueryDataHandler<DataModel> = {}
+): QueryHookResponse<DataModel> {
+  const { path, listen = false } = query
+  const {
     handleData,
     handleLoading,
     handleError,
-    unsubscribeOnUnmount = true
-  }: QueryDataHandler<DataModel> = {}
-): QueryHookResponse<DataModel> {
+    unsubscribeOnUnmount = true,
+    notifyOnNetworkStatusChange = true
+  } = options
   const {
     db,
     addListener,
@@ -54,9 +57,9 @@ function useFuego<DataModel>(
             'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
           )
         }
-        const query = new FuegoQuery({ path, where, orderBy, limit })
-        listenerName = query.getQueryStringId()
-        const { isDocument, ref: dbRef } = query.getRef(db)
+        const fuego = new FuegoQuery(query)
+        listenerName = fuego.getQueryStringId()
+        const { isDocument, ref: dbRef } = fuego.getRef(db)
         ref.current = dbRef
 
         if (!listen) {
@@ -72,7 +75,7 @@ function useFuego<DataModel>(
             response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
             setData(r)
           }
-          setLoading(false)
+          if (notifyOnNetworkStatusChange) setLoading(false)
         } else {
           const listenerExists = doesListenerExist(listenerName)
           if (listenerExists) {
@@ -82,7 +85,7 @@ function useFuego<DataModel>(
               listenerName,
               (ref.current as DocumentReference).onSnapshot((doc: any) => {
                 setData({ ...doc.data(), id: doc.id })
-                setLoading(false)
+                if (notifyOnNetworkStatusChange) setLoading(false)
               })
             )
           } else {
@@ -97,7 +100,7 @@ function useFuego<DataModel>(
                   })
                 })
                 setData(array as object[])
-                setLoading(false)
+                if (notifyOnNetworkStatusChange) setLoading(false)
               })
             )
           }
@@ -112,11 +115,11 @@ function useFuego<DataModel>(
     }
     init()
     return () => {
-      if (unsubscribeOnUnmount) {
+      if (unsubscribeOnUnmount && listenerName) {
         removeListener(listenerName)
       }
     }
-  }, [path, listen, where, orderBy])
+  }, [...Object.keys(query), ...Object.keys(options)])
 
   return { data, loading, error, db, ref: ref.current as FirestoreRefType }
 }
