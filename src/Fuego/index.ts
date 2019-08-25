@@ -6,7 +6,7 @@ import { FuegoConfig } from './types'
 export default class Fuego {
   public db: firebase.firestore.Firestore
   public auth: firebase.auth.Auth
-  public firebase: any
+  public firebase: typeof firebase
 
   constructor(config: FuegoConfig) {
     this.db = !firebase.apps.length
