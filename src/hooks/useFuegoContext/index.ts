@@ -6,5 +6,6 @@ export default () => {
   // 	FuegoContext,
   // );
   // return { db, auth, addListener, removeListener, doesListenerExist, getListener };
-  return useContext(FuegoContext)
+  const context = useContext(FuegoContext)
+  return context
 }
