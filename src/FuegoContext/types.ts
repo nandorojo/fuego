@@ -3,8 +3,8 @@ import firebase from 'firebase'
 
 export interface FuegoContextProps {
   db: FirestoreDbType
-  auth: firebase.auth.Auth
-  firebase: any
+  auth: typeof firebase.auth
+  firebase: typeof firebase
   addListener: (name: string, listener: () => void) => void
   removeListener: (name: string) => void
   doesListenerExist: (name: string) => boolean
