@@ -1,5 +1,7 @@
 import { FirestoreDbType } from '../Fuego/types'
 import firebase from 'firebase'
+import 'firebase/firestore'
+import 'firebase/auth'
 
 export interface FuegoContextProps {
   db: FirestoreDbType
