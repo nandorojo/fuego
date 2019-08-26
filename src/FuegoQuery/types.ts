@@ -9,7 +9,6 @@ import {
 } from '@firebase/firestore-types'
 import { FirestoreDbType } from '../Fuego/types'
 import {
-  QueryDataModel,
   HandleQueryData,
   HandleLoading,
   HandleError

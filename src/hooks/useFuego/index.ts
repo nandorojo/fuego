@@ -7,17 +7,21 @@ import {
 } from './types'
 import { useEffect, useState, useRef } from 'react'
 import FuegoQuery from '../../FuegoQuery'
-import {
-  DocumentReference,
-  CollectionReference
-} from '@firebase/firestore-types'
+// import {
+//   DocumentReference,
+//   CollectionReference
+// } from '@firebase/firestore-types'
 import { FirestoreRefType } from '../../FuegoQuery/types'
+import { FuegoContextProps } from '../../FuegoContext/types'
 
 function useFuego<DataModel>(
   query: UseQueryConfig,
   options: QueryDataHandler<DataModel> = {}
 ): QueryHookResponse<DataModel> {
-  const { path, listen = false } = query
+  const {
+    // path,
+    listen = false
+  } = query
   const {
     handleData,
     handleLoading,
@@ -28,10 +32,10 @@ function useFuego<DataModel>(
   const context = useFuegoContext()
   const {
     db,
-    addListener,
-    removeListener,
-    doesListenerExist,
-    getListener
+    // addListener,
+    removeListener
+    // doesListenerExist,
+    // getListener
   } = context
   const [data, setDataState] = useState<DataModel | QueryDataModel>(null)
   const [loading, setLoadingState] = useState(true)
@@ -48,6 +52,9 @@ function useFuego<DataModel>(
   // ref generated from the query
   const ref = useRef<FirestoreRefType | null>(null)
   const listenerName = useRef('')
+  const unsubscribe = useRef<
+    () => void | (() => FuegoContextProps['removeListener'])
+  >(() => {})
 
   useEffect(() => {
     new FuegoQuery(query).handle<DataModel>({
@@ -60,6 +67,7 @@ function useFuego<DataModel>(
       dbRef: ref,
       context
     })
+    if (listen) unsubscribe.current = () => removeListener(listenerName.current)
     // const init = async () => {
     //   try {
     //     if (!path) {
@@ -125,12 +133,20 @@ function useFuego<DataModel>(
     // init()
     return () => {
       if (unsubscribeOnUnmount && listenerName) {
-        removeListener(listenerName.current)
+        // removeListener(listenerName.current)
+        ;(unsubscribe.current as () => FuegoContextProps['removeListener'])()
       }
     }
   }, [...Object.keys(query), ...Object.keys(options)])
 
-  return { data, loading, error, db, ref: ref.current as FirestoreRefType }
+  return {
+    data,
+    loading,
+    error,
+    db,
+    ref: ref.current as FirestoreRefType,
+    unsubscribe: unsubscribe.current as FuegoContextProps['removeListener']
+  }
 }
 
 export default useFuego

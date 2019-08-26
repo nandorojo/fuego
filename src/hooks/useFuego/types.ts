@@ -1,6 +1,7 @@
 import { FuegoQueryConfig, FirestoreRefType } from '../../FuegoQuery/types'
 import { FirebaseError } from 'firebase'
 import { FirestoreDbType } from '../../Fuego/types'
+import { FuegoContextProps } from '../../../lib/typescript/FuegoContext/types.d'
 
 export interface UseQueryConfig extends FuegoQueryConfig {
   listen?: boolean
@@ -16,6 +17,7 @@ export interface QueryHookResponse<DataModel> {
   error: QueryError
   db: FirestoreDbType
   ref: FirestoreRefType
+  unsubscribe: FuegoContextProps['removeListener']
 }
 
 export type HandleQueryData<DataModel> = (
