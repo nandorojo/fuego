@@ -1,7 +1,7 @@
 {
   "name": "@nandorojo/fuego",
   "description": "🔥Firebase Firestore hooks & components to supercharge React and React Native.",
-  "version": "0.0.6-testing",
+  "version": "0.0.7",
   "main": "lib/module/index",
   "module": "lib/module/index",
   "react-native": "lib/module/index",
@@ -48,8 +48,9 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
+    "firebase": "^6.2.4",
     "react": "^16.8.3",
-    "firebase": "^6.2.4"
+    "stream-chat-expo": "^0.2.0"
   },
   "bugs": {
     "url": "https://github.com/nandorojo/fuego/issues"

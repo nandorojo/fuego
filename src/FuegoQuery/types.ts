@@ -23,7 +23,7 @@ type PathType = string
 
 type WhereCondition = WhereFilterOp
 
-export type WhereItem = [string, WhereCondition, string]
+export type WhereItem = [string | FieldPath, WhereCondition, any]
 export type WhereArray = WhereItem[]
 export type WhereType = WhereItem | WhereArray
 
