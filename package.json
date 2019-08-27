@@ -24,7 +24,7 @@
     "build:babel": "rm -R lib && babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "build:final": "mkdir -p bundle && npm run bundle && npm run build:types",
     "prepare": "bob build",
-    "upload": "npm run prepare && npm upload --access public"
+    "upload": "npm run prepare && npm publish --access public"
   },
   "peerDependencies": {
     "react": "^16.8.3",

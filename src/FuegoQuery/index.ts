@@ -38,7 +38,7 @@ export default class {
     try {
       if (!path)
         throw new Error('Empty path supplied to getRef in FuegoQuery class')
-      isDocument = path.split('/').length % 2 === 0
+      isDocument = path.split('/').filter(Boolean).length % 2 === 0
 
       if (isDocument) {
         ref = db.doc(path)
