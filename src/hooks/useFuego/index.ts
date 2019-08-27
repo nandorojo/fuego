@@ -7,10 +7,10 @@ import {
 } from './types'
 import { useEffect, useState, useRef } from 'react'
 import FuegoQuery from '../../FuegoQuery'
-// import {
-//   DocumentReference,
-//   CollectionReference
-// } from '@firebase/firestore-types'
+import {
+  DocumentReference,
+  CollectionReference
+} from '@firebase/firestore-types'
 import { FirestoreRefType } from '../../FuegoQuery/types'
 import { FuegoContextProps } from '../../FuegoContext/types'
 
@@ -19,7 +19,7 @@ function useFuego<DataModel>(
   options: QueryDataHandler<DataModel> = {}
 ): QueryHookResponse<DataModel> {
   const {
-    // path,
+    path,
     listen = false
   } = query
   const {
@@ -32,10 +32,10 @@ function useFuego<DataModel>(
   const context = useFuegoContext()
   const {
     db,
-    // addListener,
+    addListener,
     removeListener
-    // doesListenerExist,
-    // getListener
+    doesListenerExist,
+    getListener
   } = context
   const [data, setDataState] = useState<DataModel | QueryDataModel>(null)
   const [loading, setLoadingState] = useState(true)
@@ -57,80 +57,80 @@ function useFuego<DataModel>(
   >(() => {})
 
   useEffect(() => {
-    new FuegoQuery(query).handle<DataModel>({
-      listen,
-      notifyOnNetworkStatusChange,
-      setData,
-      setLoading,
-      setError,
-      listenerNameRef: listenerName,
-      dbRef: ref,
-      context
-    })
+    // new FuegoQuery(query).handle<DataModel>({
+    //   listen,
+    //   notifyOnNetworkStatusChange,
+    //   setData,
+    //   setLoading,
+    //   setError,
+    //   listenerNameRef: listenerName,
+    //   dbRef: ref,
+    //   context
+    // })
     if (listen) unsubscribe.current = () => removeListener(listenerName.current)
-    // const init = async () => {
-    //   try {
-    //     if (!path) {
-    //       return console.warn(
-    //         'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
-    //       )
-    //     }
-    //     listenerName.current = fuego.getQueryStringId()
-    //     const { isDocument, ref: dbRef } = fuego.getRef(db)
-    //     ref.current = dbRef
+    const init = async () => {
+      try {
+        if (!path) {
+          return console.warn(
+            'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
+          )
+        }
+        listenerName.current = fuego.getQueryStringId()
+        const { isDocument, ref: dbRef } = fuego.getRef(db)
+        ref.current = dbRef
 
-    //     if (!listen) {
-    //       if (isDocument) {
-    //         const doc = await (ref.current as DocumentReference).get()
-    //         setData({
-    //           ...doc.data(),
-    //           id: doc.id
-    //         })
-    //       } else {
-    //         const response = await (ref.current as CollectionReference).get()
-    //         const r: object[] = []
-    //         response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
-    //         setData(r)
-    //       }
-    //       if (notifyOnNetworkStatusChange) setLoading(false)
-    //     } else {
-    //       const listenerExists = doesListenerExist(listenerName.current)
-    //       if (listenerExists) {
-    //         getListener(listenerName.current)
-    //       } else if (isDocument) {
-    //         addListener(
-    //           listenerName.current,
-    //           (ref.current as DocumentReference).onSnapshot((doc: any) => {
-    //             setData({ ...doc.data(), id: doc.id })
-    //             if (notifyOnNetworkStatusChange) setLoading(false)
-    //           })
-    //         )
-    //       } else {
-    //         addListener(
-    //           listenerName.current,
-    //           (ref.current as CollectionReference).onSnapshot(querySnapshot => {
-    //             const array: object[] = []
-    //             querySnapshot.forEach(doc => {
-    //               array.push({
-    //                 ...doc.data(),
-    //                 id: doc.id
-    //               })
-    //             })
-    //             setData(array as object[])
-    //             if (notifyOnNetworkStatusChange) setLoading(false)
-    //           })
-    //         )
-    //       }
-    //     }
-    //   } catch (e) {
-    //     setError(e)
-    //     console.error(
-    //       'fuego error: \nuseFuego failed. \nError: ',
-    //       JSON.stringify(e)
-    //     )
-    //   }
-    // }
-    // init()
+        if (!listen) {
+          if (isDocument) {
+            const doc = await (ref.current as DocumentReference).get()
+            setData({
+              ...doc.data(),
+              id: doc.id
+            })
+          } else {
+            const response = await (ref.current as CollectionReference).get()
+            const r: object[] = []
+            response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
+            setData(r)
+          }
+          if (notifyOnNetworkStatusChange) setLoading(false)
+        } else {
+          const listenerExists = doesListenerExist(listenerName.current)
+          if (listenerExists) {
+            getListener(listenerName.current)
+          } else if (isDocument) {
+            addListener(
+              listenerName.current,
+              (ref.current as DocumentReference).onSnapshot((doc: any) => {
+                setData({ ...doc.data(), id: doc.id })
+                if (notifyOnNetworkStatusChange) setLoading(false)
+              })
+            )
+          } else {
+            addListener(
+              listenerName.current,
+              (ref.current as CollectionReference).onSnapshot(querySnapshot => {
+                const array: object[] = []
+                querySnapshot.forEach(doc => {
+                  array.push({
+                    ...doc.data(),
+                    id: doc.id
+                  })
+                })
+                setData(array as object[])
+                if (notifyOnNetworkStatusChange) setLoading(false)
+              })
+            )
+          }
+        }
+      } catch (e) {
+        setError(e)
+        console.error(
+          'fuego error: \nuseFuego failed. \nError: ',
+          JSON.stringify(e)
+        )
+      }
+    }
+    init()
     return () => {
       if (unsubscribeOnUnmount && listenerName) {
         // removeListener(listenerName.current)

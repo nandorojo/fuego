@@ -1,7 +1,7 @@
 {
   "name": "@nandorojo/fuego",
   "description": "🔥Firebase Firestore hooks & components to supercharge React and React Native.",
-  "version": "0.0.8-broken",
+  "version": "0.0.8-testing",
   "main": "lib/module/index",
   "module": "lib/module/index",
   "react-native": "lib/module/index",
