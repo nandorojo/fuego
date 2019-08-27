@@ -46,7 +46,8 @@ export default class {
         ref = db.collection(path)
         if (where) {
           function multipleConditions(w: WhereType): w is WhereArray {
-            return Array.isArray((w as WhereArray)[0])
+            // return Array.isArray((w as WhereArray)[0])
+            return !!(w as WhereArray) && Array.isArray(w[0])
           }
           if (multipleConditions(where)) {
             ;(where as WhereArray).forEach((w: WhereItem) => {

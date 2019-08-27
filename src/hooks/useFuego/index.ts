@@ -30,6 +30,7 @@ function useFuego<DataModel>(
     notifyOnNetworkStatusChange = true
   } = options
   const context = useFuegoContext()
+  console.warn('USE FUEGO CONTEXT HERE', context)
   const {
     db,
     // addListener,
