@@ -8,7 +8,7 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
 
   useEffect(() => {
     const unsubcribe = firebase.auth().onIdTokenChanged(u => {
-      if (props.onAuthUpdate) props.onAuthUpdate(u)
+      if (props.beforeAuthUpdate) props.beforeAuthUpdate(u)
       setUser(u)
     })
     return unsubcribe

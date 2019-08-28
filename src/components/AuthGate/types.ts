@@ -3,5 +3,5 @@ import { ComponentType } from 'react'
 
 export interface AuthGateProps extends AuthGateOptions {
   AuthComponent: ComponentType
-  onAuthUpdate?: (user: firebase.User | null) => any
+  beforeAuthUpdate?: (user: firebase.User | null) => any
 }
