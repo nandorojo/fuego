@@ -1,21 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-  FunctionComponent,
-  ComponentType
-} from 'react'
+import { useState, useEffect } from 'react'
 import firebase from 'firebase'
-import { AuthGateProps } from './types'
-import useFuegoContext from '../../hooks/useFuegoContext'
 
-const AuthGate: FunctionComponent<AuthGateProps> = props => {
-  const { LoadingComponent, displayName, photoURL } = props
+export default function() {
   const [user, setUser] = useState<firebase.User | null | 'loading'>('loading')
-  const context = useFuegoContext()
-  const { auth } = context
 
   useEffect(() => {
-    const unsubcribe = auth().onIdTokenChanged(u => {
+    const unsubcribe = firebase.auth().onIdTokenChanged(u => {
       if (props.beforeAuthUpdate) props.beforeAuthUpdate(u)
       setUser(u)
     })
@@ -26,8 +16,8 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
     const start = async () => {
       try {
         if (!props.AuthComponent || props.signInAnonymously) {
-          await auth().signInAnonymously()
-          const { currentUser } = auth()
+          await firebase.auth().signInAnonymously()
+          const { currentUser } = firebase.auth()
           if (displayName || currentUser) {
             //   well this is just terrible but whatever fix later
             if (!photoURL) {
@@ -57,16 +47,5 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
     props.photoURL,
     props.AuthComponent
   ])
-
-  if (user === 'loading') return LoadingComponent ? <LoadingComponent /> : null
-
-  if (!user && props.AuthComponent) {
-    const AuthComponent = props.AuthComponent as ComponentType
-
-    return <AuthComponent {...context} {...props} />
-  }
-
-  return <>{props.children}</>
+  return {}
 }
-
-export default AuthGate
