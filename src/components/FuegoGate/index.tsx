@@ -1,4 +1,9 @@
-import React, { useEffect, useState, FunctionComponent } from 'react'
+import React, {
+  useEffect,
+  useState,
+  FunctionComponent,
+  ComponentType
+} from 'react'
 import firebase from 'firebase'
 import { AuthGateProps } from './types'
 
@@ -19,18 +24,19 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
       try {
         if (!props.AuthComponent || props.signInAnonymously) {
           await firebase.auth().signInAnonymously()
-          if (displayName || photoURL) {
+          const { currentUser } = firebase.auth()
+          if (displayName || currentUser) {
             //   well this is just terrible but whatever fix later
             if (!photoURL) {
-              await firebase.auth().currentUser.updateProfile({
+              await (currentUser as firebase.User).updateProfile({
                 displayName
               })
             } else if (!displayName) {
-              await firebase.auth().currentUser.updateProfile({
+              await (currentUser as firebase.User).updateProfile({
                 photoURL
               })
             } else {
-              await firebase.auth().currentUser.updateProfile({
+              await (currentUser as firebase.User).updateProfile({
                 photoURL,
                 displayName
               })
@@ -51,9 +57,9 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
 
   if (user === 'loading') return LoadingComponent ? <LoadingComponent /> : null
 
-  const { AuthComponent } = props
-
   if (!user && props.AuthComponent) {
+    const AuthComponent = props.AuthComponent as ComponentType
+
     return <AuthComponent {...firebase} {...props} />
   }
 

@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react'
 import { AuthGateOptions } from './types'
-import AuthGate from '../../components/FuegoGate/index'
+import AuthGate from '../../components/FuegoGate'
 
 export default (
   AuthComponent?: ComponentType,
