@@ -131,6 +131,10 @@ export default class {
           'You called the useFuego hook without providing a path. \nIf you want access to the firestore db object, try using useFuegoContext() instead.'
         )
       }
+      if (!context)
+        throw new Error(
+          'missing context from firestore query handler. check useFuego'
+        )
       const { db, addListener, doesListenerExist, getListener } = context
       listenerNameRef.current = this.getQueryStringId()
       const { isDocument, ref } = this.getRef(db)
