@@ -1,7 +1,7 @@
 {
   "name": "@nandorojo/fuego",
   "description": "🔥Firebase Firestore hooks & components to supercharge React and React Native.",
-  "version": "0.0.8-changeattempt",
+  "version": "0.0.9",
   "main": "lib/module/index",
   "module": "lib/module/index",
   "react-native": "lib/module/index",
@@ -42,6 +42,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@firebase/firestore-types": "^1.4.4",
     "@react-native-community/bob": "^0.6.1",
+    "@types/firebase": "^3.2.1",
     "@types/react": "^16.9.1",
     "@types/react-dom": "^16.8.5",
     "@types/react-native": "^0.60.4",

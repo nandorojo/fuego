@@ -7,10 +7,10 @@ import {
 } from './types'
 import { useEffect, useState, useRef } from 'react'
 import FuegoQuery from '../../FuegoQuery'
-import {
-  DocumentReference,
-  CollectionReference
-} from '@firebase/firestore-types'
+// import {
+//   DocumentReference,
+//   CollectionReference
+// } from '@firebase/firestore-types'
 import { FirestoreRefType } from '../../FuegoQuery/types'
 import { FuegoContextProps } from '../../FuegoContext/types'
 
@@ -18,7 +18,10 @@ function useFuego<DataModel>(
   query: UseQueryConfig,
   options: QueryDataHandler<DataModel> = {}
 ): QueryHookResponse<DataModel> {
-  const { path, listen = false } = query
+  const {
+    // path,
+    listen = false
+  } = query
   const {
     handleData,
     handleLoading,
@@ -29,10 +32,10 @@ function useFuego<DataModel>(
   const context = useFuegoContext()
   const {
     db,
-    addListener,
-    removeListener,
-    doesListenerExist,
-    getListener
+    removeListener
+    // addListener,
+    // doesListenerExist,
+    // getListener
   } = context
   const [data, setDataState] = useState<DataModel | QueryDataModel>(null)
   const [loading, setLoadingState] = useState(true)
@@ -64,7 +67,7 @@ function useFuego<DataModel>(
       dbRef: ref,
       context
     })
-    // if (listen) unsubscribe.current = () => removeListener(listenerName.current)
+    if (listen) unsubscribe.current = () => removeListener(listenerName.current)
     // const init = async () => {
     //   try {
     //     if (!path) {
