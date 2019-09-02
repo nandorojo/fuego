@@ -139,10 +139,12 @@ function useFuego<DataModel>(
       }
     }
   }, [
-    ...Object.keys(query).map(opt => query[opt as keyof UseQueryConfig]),
-    ...Object.keys(options).map(
-      opt => options[opt as keyof QueryDataHandler<DataModel>]
-    )
+    // ...Object.keys(query).map(opt => query[opt as keyof UseQueryConfig]),
+    // ...Object.keys(options).map(
+    //   opt => options[opt as keyof QueryDataHandler<DataModel>]
+    // )
+    options,
+    query
   ])
 
   return {
