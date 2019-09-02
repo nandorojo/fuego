@@ -15,7 +15,9 @@ const FuegoProvider: FunctionComponent<FuegoProviderProps> = ({
 
   const addListener = (name: string, listener: () => void) => {
     listeners.current[name] = listener
-    const numberOfListeners = Object.keys(listeners.current).length
+    const numberOfListeners = Object.keys(listeners.current).filter(
+      name => listeners.current[name] // listeners that exist
+    ).length
     if (numberOfListeners >= 4)
       console.warn(
         'Fuego warning: too many listeners',

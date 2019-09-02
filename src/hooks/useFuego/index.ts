@@ -138,7 +138,12 @@ function useFuego<DataModel>(
         ;(unsubscribe.current as () => FuegoContextProps['removeListener'])()
       }
     }
-  }, [...Object.keys(query), ...Object.keys(options)])
+  }, [
+    ...Object.keys(query).map(opt => query[opt as keyof UseQueryConfig]),
+    ...Object.keys(options).map(
+      opt => options[opt as keyof QueryDataHandler<DataModel>]
+    )
+  ])
 
   return {
     data,
