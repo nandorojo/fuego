@@ -35,7 +35,7 @@ navigator.userAgent = 'React-Native'
 // cause they'll fail on our platform (and don't quite make sense.)
 // (Do not change this to an import, cause that will get hoisted above
 // our userAgent hack above.)
-const setGlobalVars = require('./node_modules/indexeddbshim/dist/indexeddbshim-noninvasive')
+const setGlobalVars = require('indexeddbshim/dist/indexeddbshim-noninvasive')
 setGlobalVars(window, { checkOrigin: false })
 
 // Hack 4: Firestore persistence really wants to use localStorage
