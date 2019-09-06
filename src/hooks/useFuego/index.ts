@@ -143,8 +143,8 @@ function useFuego<DataModel>(
     // ...Object.keys(options).map(
     //   opt => options[opt as keyof QueryDataHandler<DataModel>]
     // )
-    options,
-    query
+    ...Object.keys(options),
+    ...Object.keys(query)
   ])
 
   return {
