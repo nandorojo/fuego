@@ -20,8 +20,4 @@ export default class Fuego {
     this.auth = firebase.auth
     this.firebase = firebase
   }
-  async dangerouslyEnablePeristenceOnExpoAsync() {
-    require('../persist-hack')
-    return this.firebase.firestore().enablePersistence()
-  }
 }
