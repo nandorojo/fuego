@@ -12,11 +12,10 @@ export default class Fuego {
   public functions: FuegoContextProps['functions']
 
   constructor(config: FuegoConfig) {
-    const app = !firebase.apps.length
-      ? firebase.initializeApp(config)
-      : firebase.app()
     this.functions = firebase.functions
-    this.db = app.firestore()
+    this.db = !firebase.apps.length
+      ? firebase.initializeApp(config).firestore()
+      : firebase.app().firestore()
     this.auth = firebase.auth
     this.firebase = firebase
   }

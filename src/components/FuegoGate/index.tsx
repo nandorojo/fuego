@@ -25,7 +25,7 @@ const AuthGate: FunctionComponent<AuthGateProps> = props => {
   useEffect(() => {
     const start = async () => {
       try {
-        if (!props.AuthComponent || props.signInAnonymously) {
+        if (!props.AuthComponent && props.signInAnonymously) {
           await auth().signInAnonymously()
           const { currentUser } = auth()
           if (displayName || currentUser) {
