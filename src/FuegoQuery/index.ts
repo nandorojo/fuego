@@ -11,7 +11,9 @@ import {
 import { FirestoreDbType } from '../Fuego/types'
 import {
   CollectionReference,
-  DocumentReference
+  DocumentReference,
+  DocumentSnapshot,
+  QuerySnapshot
 } from '@firebase/firestore-types'
 
 export default class {
@@ -144,13 +146,18 @@ export default class {
         if (isDocument) {
           const doc = await (dbRef.current as DocumentReference).get()
           setData({
-            ...doc.data(),
+            ...doc.data({ serverTimestamps: 'estimate' }),
             id: doc.id
           })
         } else {
           const response = await (dbRef.current as CollectionReference).get()
           const r: object[] = []
-          response.forEach(doc => r.push({ ...doc.data(), id: doc.id }))
+          response.forEach(doc =>
+            r.push({
+              ...doc.data({ serverTimestamps: 'estimate' }),
+              id: doc.id
+            })
+          )
           setData(r)
         }
         if (notifyOnNetworkStatusChange) setLoading(false)
@@ -166,25 +173,32 @@ export default class {
         } else if (isDocument) {
           addListener(
             listenerNameRef.current,
-            (dbRef.current as DocumentReference).onSnapshot((doc: any) => {
-              setData({ ...doc.data(), id: doc.id })
-              if (notifyOnNetworkStatusChange) setLoading(false)
-            })
+            (dbRef.current as DocumentReference).onSnapshot(
+              (doc: DocumentSnapshot) => {
+                setData({
+                  ...doc.data({ serverTimestamps: 'estimate' }),
+                  id: doc.id
+                })
+                if (notifyOnNetworkStatusChange) setLoading(false)
+              }
+            )
           )
         } else {
           addListener(
             listenerNameRef.current,
-            (dbRef.current as CollectionReference).onSnapshot(querySnapshot => {
-              const array: object[] = []
-              querySnapshot.forEach(doc => {
-                array.push({
-                  ...doc.data(),
-                  id: doc.id
+            (dbRef.current as CollectionReference).onSnapshot(
+              (querySnapshot: QuerySnapshot) => {
+                const array: object[] = []
+                querySnapshot.forEach(doc => {
+                  array.push({
+                    ...doc.data({ serverTimestamps: 'estimate' }),
+                    id: doc.id
+                  })
                 })
-              })
-              setData(array as object[])
-              if (notifyOnNetworkStatusChange) setLoading(false)
-            })
+                setData(array as object[])
+                if (notifyOnNetworkStatusChange) setLoading(false)
+              }
+            )
           )
         }
       }
