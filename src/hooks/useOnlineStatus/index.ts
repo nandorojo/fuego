@@ -1,13 +1,18 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect } from 'react'
 import useFuegoContext from '../useFuegoContext'
-import useFuego from '../../../lib/typescript/hooks/useFuego/index.d'
 
 export default () => {
 	const { auth, firebase } = useFuegoContext()
+	let uid = ''
+	try {
+		;({ uid } = auth().currentUser as firebase.User)
+	} catch (e) {
+		console.error('oh shoot, invalid auth in useOnlineStatus hook', e)
+	}
 
 	useEffect(() => {
-		const { uid } = auth().currentUser
 		const databaseRef = firebase.database().ref(`/status/${uid}`)
+
 		const offline = {
 			state: 'offline',
 			lastChanged: firebase.database.ServerValue.TIMESTAMP
@@ -16,20 +21,27 @@ export default () => {
 			state: 'online',
 			lastChanged: firebase.database.ServerValue.TIMESTAMP
 		}
-		firebase
-			.database()
-			.ref('.info/connected')
-			.on('value', async snapshot => {
-				if (!snapshot.val()) return
+		const dbRef = firebase.database().ref('.info/connected')
 
-				try {
-					await databaseRef.onDisconnect().set(offline)
-					databaseRef.set(online)
-				} catch (e) {
-					console.error(
-						`useOnlineStatus error within snapshot listener ${e}`
-					)
-				}
-			})
-	}, [])
+		dbRef.on('value', async snapshot => {
+			if (!snapshot.val()) return
+
+			try {
+				await databaseRef.onDisconnect().set(offline)
+				databaseRef.set(online)
+			} catch (e) {
+				console.error(
+					`useOnlineStatus error within snapshot listener ${e}`
+				)
+			}
+		})
+		return () => {
+			try {
+				dbRef.set(offline)
+				dbRef.off('value')
+			} catch (e) {
+				console.error('useOnlineStatus cleanup effect error', e)
+			}
+		}
+	}, [uid])
 }
