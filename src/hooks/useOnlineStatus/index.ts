@@ -21,9 +21,9 @@ export default () => {
 			state: 'online',
 			lastChanged: firebase.database.ServerValue.TIMESTAMP
 		}
-		const dbRef = firebase.database().ref('.info/connected')
+		const infoRef = firebase.database().ref('.info/connected')
 
-		dbRef.on('value', async snapshot => {
+		infoRef.on('value', async snapshot => {
 			if (!snapshot.val()) return
 
 			try {
@@ -37,8 +37,8 @@ export default () => {
 		})
 		return () => {
 			try {
-				dbRef.set(offline)
-				dbRef.off('value')
+				databaseRef.set(offline)
+				infoRef.off('value')
 			} catch (e) {
 				console.error('useOnlineStatus cleanup effect error', e)
 			}
