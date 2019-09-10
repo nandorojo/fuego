@@ -1,14 +1,11 @@
 import {
     FuegoQueryConfig,
     FirestoreRefType,
-    FirestoreDataModel,
     DocumentModel
 } from '../../FuegoQuery/types'
 import { FirebaseError } from 'firebase'
 import { FirestoreDbType } from '../../Fuego/types'
-// import { FuegoContextProps } from '../../../lib/typescript/FuegoContext/types.d'
 import { FuegoContextProps } from '../../FuegoContext/types'
-import { Dispatch, SetStateAction } from 'react'
 
 export interface UseQueryConfig extends FuegoQueryConfig {
     listen?: boolean

@@ -1,17 +1,19 @@
-import { FunctionComponent } from 'react'
-import { GetFuegoProps } from './types'
 import useFuego from '../../hooks/useFuego'
+import { DocumentModel } from '../../FuegoQuery/types'
+import { ReactElement } from 'react'
+import { GetFuegoProps } from './types'
 
-const GetFuego: FunctionComponent<GetFuegoProps> = ({
-	handleData,
-	handleLoading,
-	handleError,
-	children,
-	...config
-}) => {
-	const fuego = useFuego(config, { handleData, handleError, handleLoading })
+function GetFuego<Data extends DocumentModel>(
+    props: GetFuegoProps<Data>
+): ReactElement<GetFuegoProps<Data>> {
+    const { handleData, handleLoading, handleError, ...config } = props
+    const fuego = useFuego<Data>(config, {
+        handleData,
+        handleError,
+        handleLoading
+    })
 
-	return children(fuego)
+    return props.children(fuego)
 }
 
 export default GetFuego

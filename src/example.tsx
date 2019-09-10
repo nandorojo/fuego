@@ -1,12 +1,15 @@
 import React from 'react'
 import { View, Text, FlatList } from 'react-native'
 import useFuego from './hooks/useFuego'
-import { CollectionModel, FirestoreDataModel } from './FuegoQuery/types'
+import {
+    CollectionModel,
+    FirestoreDataModel,
+    DocumentModel
+} from './FuegoQuery/types'
 
-interface Model extends CollectionModel {
+interface Model extends DocumentModel {
     text: 'hi'
 }
-;[]
 
 export default () => {
     const { data, loading } = useFuego<Model>({
