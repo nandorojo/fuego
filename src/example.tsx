@@ -1,15 +1,21 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import useFuego from './hooks/useFuego'
+import { CollectionModel, FirestoreDataModel } from './FuegoQuery/types'
+
+interface Model extends CollectionModel {
+    text: 'hi'
+}
+;[]
 
 export default () => {
-	const { data, loading } = useFuego({
-		path: 'users',
-		listen: true,
-	})
-	if (loading) return null
+    const { data, loading } = useFuego<Model>({
+        path: 'users',
+        listen: true
+    })
+    if (loading) return null
 
-	const renderItem = ({ item: name }) => <Text>{name}</Text>
+    const renderItem = ({ item: name }) => <Text>{name}</Text>
 
-	return <FlatList data={data as object[]} renderItem={renderItem} />
+    return <FlatList data={data as CollectionModel} renderItem={renderItem} />
 }

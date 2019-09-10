@@ -9,7 +9,9 @@ export { default as useOnlineStatus } from './hooks/useOnlineStatus'
 export { default as FuegoGate } from './components/FuegoGate'
 export { default as connectFuegoGate } from './HOC/connectFuegoGate'
 export {
-	default as dangerouslyEnablePeristenceOnExpoAsync
+    default as dangerouslyEnablePeristenceOnExpoAsync
 } from './persistence'
 
 export { connectFuego, useFuego, FuegoProvider, GetFuego, Fuego, FuegoQuery }
+
+export { CollectionModel, DocumentModel } from './FuegoQuery/types'
