@@ -1,9 +1,34 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useCallback, useRef } from 'react'
 import useFuegoContext from '../useFuegoContext'
+import { OnlineStatus } from './types'
+import useAppState from '../useAppState'
 
 export default () => {
 	const { auth, firebase } = useFuegoContext()
 	let uid = ''
+
+	const lastSentStatus = useRef<OnlineStatus['state']>()
+	const ready = useRef(false)
+
+	const databaseRef = useMemo(
+		() => firebase.database().ref(`/status/${uid}`),
+		[uid]
+	)
+	const status = useCallback((state: OnlineStatus['state']) => {
+		return {
+			state,
+			lastChanged: firebase.database.ServerValue.TIMESTAMP
+		}
+	}, [])
+
+	const onAppStateChange = useCallback((state: OnlineStatus['state']) => {
+		if (ready.current && state !== lastSentStatus.current) {
+			databaseRef.set(status(state))
+		}
+	}, [])
+
+	useAppState(onAppStateChange)
+
 	try {
 		;({ uid } = auth().currentUser as firebase.User)
 	} catch (e) {
@@ -11,24 +36,16 @@ export default () => {
 	}
 
 	useEffect(() => {
-		const databaseRef = firebase.database().ref(`/status/${uid}`)
-
-		const offline = {
-			state: 'offline',
-			lastChanged: firebase.database.ServerValue.TIMESTAMP
-		}
-		const online = {
-			state: 'online',
-			lastChanged: firebase.database.ServerValue.TIMESTAMP
-		}
 		const infoRef = firebase.database().ref('.info/connected')
 
 		infoRef.on('value', async snapshot => {
 			if (!snapshot.val()) return
 
 			try {
-				await databaseRef.onDisconnect().set(offline)
-				databaseRef.set(online)
+				await databaseRef.onDisconnect().set(status('inactive'))
+				ready.current = true
+				lastSentStatus.current = 'active'
+				databaseRef.set(status(lastSentStatus.current))
 			} catch (e) {
 				console.error(
 					`useOnlineStatus error within snapshot listener ${e}`
@@ -37,7 +54,8 @@ export default () => {
 		})
 		return () => {
 			try {
-				databaseRef.set(offline)
+				lastSentStatus.current = 'inactive'
+				databaseRef.set(status(lastSentStatus.current))
 				infoRef.off('value')
 			} catch (e) {
 				console.error('useOnlineStatus cleanup effect error', e)
