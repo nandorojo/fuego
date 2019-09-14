@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import firebase from 'firebase'
+import { AuthGateProps } from '../../components/FuegoGate/types'
 
-export default function() {
+// TODO this is fucked, redo it for hooks
+export default function(props: AuthGateProps) {
   const [user, setUser] = useState<firebase.User | null | 'loading'>('loading')
+
+  const { displayName, photoURL } = props
 
   useEffect(() => {
     const unsubcribe = firebase.auth().onIdTokenChanged(u => {
@@ -41,11 +45,6 @@ export default function() {
       }
     }
     start()
-  }, [
-    props.signInAnonymously,
-    props.displayName,
-    props.photoURL,
-    props.AuthComponent
-  ])
+  }, [props.signInAnonymously, displayName, photoURL, props.AuthComponent])
   return {}
 }

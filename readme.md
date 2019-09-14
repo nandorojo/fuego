@@ -23,6 +23,8 @@ See [`useFuego` docs]() for custom options.
 Don't worry about parsing through firestore's `querySnapshot`. Fuego handles that for you.
 
 ```javascript
+import { useFuego } from '@nandorojo/fuego'
+
 const Users = () => {
   const { data, loading } = useFuego({ path: 'users' })
 
@@ -67,15 +69,40 @@ const Memes = () => {
 }
 ```
 
+### Easily write data to your backend
+
+```javascript
+// NOTE this is using useFuegoContext, not useFuego
+import { useFuegoContext } from '@nandorojo/fuego'
+import Juice from 'usechat'
+
+const ChatRoom = (props) => {
+  // access the firestore db object
+  const { db } = useFuegoContext()
+  
+  const sendMessage = (text) => {
+   // write to the firestore db
+  	db.collection(`channels/${props.id}/messages`).add({ text })
+  }
+
+ // return your render code here...
+}
+```
+
+
 ## Setup
 
-Wrap your `App.js` component with the `FuegoProvider` component. Pass a `Fuego` instance as a prop.
+1. Wrap your `App.js` component with the `<FuegoProvider />` component. Pass a `Fuego` instance as a prop.
+2. Place the `<FuegoGate />` component directly within the provider component to make sure your app has up-to-date auth.
 
 _See [firebase's website](https://firebase.google.com/docs/web/setup#config-object) for steps on getting your `firebaseConfig`._
 
+** Example**
+
 ```javascript
-// ...other imports
-import { FuegoProvider, Fuego } from '@nandorojo/fuego'
+import React from 'react'
+import { FuegoProvider, Fuego, FuegoGate } from '@nandorojo/fuego'
+import YourAppHere from './path/to/app'
 
 // replace with your custom firebaseConfig
 const firebaseConfig = {
@@ -93,7 +120,43 @@ const fuego = new Fuego(firebaseConfig)
 export default () => {
   return (
     <FuegoProvider fuego={fuego}>
-      <App />
+      <FuegoGate signInAnonymously displayName="AnonymousTestName">
+        <YourAppHere />
+      <FuegoGate>
+    </FuegoProvider>
+  )
+}
+```
+
+# Docs
+
+# `<FuegoGate />`
+
+Component that lets your app always be properly authenticated with firebase. Its children won't render until the app has successfully authenticated.
+
+**Important:** This component must be wrapped within the `FuegoProvider` to work. It's highly recommended you make it the direct child (as seen in the example above), though it isn't techincally necessary.
+
+## FuegoGate props
+
+| Prop | Type | Description | example |
+|---------------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| `signInAnonymously` | `boolean` | (Optional) If true, users will automtically be signed in anonymously, _unless_ the `AuthComponent` prop is specified. This is useful for testing with anonymous users. |  |
+| `beforeAuthUpdate` | `(user: firebase.User | null) => void` | (Optional) Callback function that will be called when the auth updates, right before the component updates. It takes one argument: a user if it exists, and null otherwise. This is useful if you want to store the user in redux or some other state manager. |  |
+| `displayName` | `string` | (Optional) A display name given to the user *if* the `signInAnonymously` prop is set to `true`. |  |
+| `photoURL` | `string` | (Optional) A photo url given to the user *if* the `signInAnonymously` prop is set to `true`. |  |
+| `LoadingComponent` | `ReactNode | null` | (Optional) A react component that renders while the auth is initially loading. Defaults to a screen with a loading indicator; you can also set it to null to disable it. |  |
+| `AuthComponent` | `ReactNode` | (Required if you don't set `signInAnonymously` to `true`. A react component to render when loading has completed and the user is not currently signed in. This is where you insert your own auth flow component. It receives this firebase instance's `auth` as a prop, so you can use `this.props.auth().signInWithToken` in the component or other firebase `auth` methods using that prop. Overrides signInAnonymously if prop is set. |  |
+
+
+```javascript
+// ...following the <FuegoProvider /> example
+
+export default () => {
+  return (
+    <FuegoProvider fuego={fuego}>
+      <FuegoGate> // <-- this part is added
+        <App />
+      </FuegoGate>
     </FuegoProvider>
   )
 }
