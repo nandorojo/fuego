@@ -74,7 +74,6 @@ const Memes = () => {
 ```javascript
 // NOTE this is using useFuegoContext, not useFuego
 import { useFuegoContext } from '@nandorojo/fuego'
-import Juice from 'usechat'
 
 const ChatRoom = (props) => {
   // access the firestore db object
