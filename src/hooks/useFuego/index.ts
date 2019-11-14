@@ -57,7 +57,7 @@ function useFuego<DataModel extends DocumentModel>(
         if (listen)
             unsubscribe.current = () => removeListener(listenerName.current)
         return () => {
-            if (unsubscribeOnUnmount && listenerName) {
+            if (unsubscribeOnUnmount && listenerName.current) {
                 ;(unsubscribe.current as () => FuegoContextProps['removeListener'])()
             }
         }

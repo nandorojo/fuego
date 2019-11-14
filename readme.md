@@ -129,6 +129,29 @@ export default () => {
 
 # Docs
 
+# `useFuego`
+
+React hook to query Firestore. Allows both for one-time `get` requests or `snapshot` listeners.
+
+## Arguments
+
+`useFuego` takes 2 arguments: `query` and `options`.
+
+``` javascript
+const { data, loading } = useFuego(query, options)
+```
+
+```javascript
+data
+loading
+error
+db
+ref
+unsubscribe
+```
+
+## Returns
+
 # `<FuegoGate />`
 
 Component that lets your app always be properly authenticated with firebase. Its children won't render until the app has successfully authenticated.
