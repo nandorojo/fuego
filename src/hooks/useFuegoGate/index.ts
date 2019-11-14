@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import { AuthGateProps } from '../../components/FuegoGate/types'
 
 // TODO this is fucked, redo it for hooks

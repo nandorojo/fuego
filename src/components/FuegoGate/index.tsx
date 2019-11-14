@@ -4,7 +4,7 @@ import React, {
   FunctionComponent,
   ComponentType
 } from 'react'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import { AuthGateProps } from './types'
 import useFuegoContext from '../../hooks/useFuegoContext'
 

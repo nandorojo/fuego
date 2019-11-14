@@ -1,5 +1,5 @@
 import { FirestoreDbType } from '../Fuego/types'
-import firebase, { functions } from 'firebase'
+import firebase, { functions } from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 

@@ -1,4 +1,4 @@
-import { firestore } from 'firebase'
+import { firestore } from 'firebase/app'
 
 export default async function(store: typeof firestore) {
   require('./persist-hack.js')
