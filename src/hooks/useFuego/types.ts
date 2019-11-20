@@ -40,3 +40,8 @@ export interface QueryDataHandler<DataModel extends DocumentModel> {
   unsubscribeOnUnmount?: boolean
   notifyOnNetworkStatusChange?: boolean
 }
+
+export type DocumentOrCollection<
+  DocModel extends DocumentModel,
+  Collection extends boolean = false
+> = Collection extends true ? DocModel[] : DocModel
