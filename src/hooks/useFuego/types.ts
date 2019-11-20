@@ -16,7 +16,7 @@ export type QueryDataModel = object[] | object | null
 export type QueryError = null | FirebaseError | string
 
 export interface QueryHookResponse<DataModel> {
-  data: DataModel | null
+  data: DataModel | DataModel[] | null
   loading: boolean
   error: QueryError
   db: FirestoreDbType
@@ -40,8 +40,3 @@ export interface QueryDataHandler<DataModel extends DocumentModel> {
   unsubscribeOnUnmount?: boolean
   notifyOnNetworkStatusChange?: boolean
 }
-
-export type DocumentOrCollection<
-  DocModel extends DocumentModel,
-  Collection extends boolean = false
-> = Collection extends true ? DocModel[] : DocModel
