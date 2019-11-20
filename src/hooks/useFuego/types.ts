@@ -16,7 +16,7 @@ export type QueryDataModel = object[] | object | null
 export type QueryError = null | FirebaseError | string
 
 export interface QueryHookResponse<DataModel> {
-  data: DataModel | DataModel[] | null
+  data: DataModel
   loading: boolean
   error: QueryError
   db: FirestoreDbType
