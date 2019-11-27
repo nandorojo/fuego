@@ -4,16 +4,16 @@ import { ReactElement } from 'react'
 import { GetFuegoProps } from './types'
 
 function GetFuego<Data extends DocumentModel>(
-    props: GetFuegoProps<Data>
+  props: GetFuegoProps<Data>
 ): ReactElement<GetFuegoProps<Data>> {
-    const { handleData, handleLoading, handleError, ...config } = props
-    const fuego = useFuego<Data>(config, {
-        handleData,
-        handleError,
-        handleLoading
-    })
+  const { handleData, handleLoading, handleError, children, ...config } = props
+  const fuego = useFuego<Data>(config, {
+    handleData,
+    handleError,
+    handleLoading
+  })
 
-    return props.children(fuego)
+  return children(fuego)
 }
 
 export default GetFuego
