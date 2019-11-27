@@ -148,10 +148,12 @@ export default class {
         if (isDocument) {
           const doc = await (dbRef.current as DocumentReference).get()
           setExists(doc.exists)
-          setData({
-            ...doc.data({ serverTimestamps: 'estimate' }),
-            id: doc.id
-          } as DataModel)
+          if (doc.exists) {
+            setData({
+              ...doc.data({ serverTimestamps: 'estimate' }),
+              id: doc.id
+            } as DataModel)
+          }
         } else {
           const response = await (dbRef.current as CollectionReference).get()
           // const r: object[] = []
@@ -163,7 +165,9 @@ export default class {
             } as DataModel)
           )
           setExists(!response.empty)
-          setData(r)
+          if (!response.empty) {
+            setData(r)
+          }
         }
         if (notifyOnNetworkStatusChange) setLoading(false)
       } else {
@@ -180,12 +184,14 @@ export default class {
             listenerNameRef.current,
             (dbRef.current as DocumentReference).onSnapshot(
               (doc: DocumentSnapshot) => {
-                setData({
-                  ...doc.data({
-                    serverTimestamps: 'estimate'
-                  }),
-                  id: doc.id
-                } as DataModel)
+                if (doc.exists) {
+                  setData({
+                    ...doc.data({
+                      serverTimestamps: 'estimate'
+                    }),
+                    id: doc.id
+                  } as DataModel)
+                }
                 setExists(doc.exists)
                 if (notifyOnNetworkStatusChange) setLoading(false)
               }
@@ -205,8 +211,10 @@ export default class {
                     id: doc.id
                   } as DataModel)
                 })
+                if (!querySnapshot.empty) {
+                  setData(array)
+                }
                 setExists(!querySnapshot.empty)
-                setData(array)
                 if (notifyOnNetworkStatusChange) setLoading(false)
               }
             )
