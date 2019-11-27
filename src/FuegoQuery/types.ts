@@ -52,7 +52,6 @@ export type FirestoreRefType = DocumentReference | CollectionReference | Query
 
 export interface DocumentModel extends DocumentData {
   id: string
-  exists: boolean
 }
 
 export type CollectionModel = DocumentModel[]
