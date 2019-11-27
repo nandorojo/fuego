@@ -23,6 +23,7 @@ export interface QueryHookResponse<DataModel> {
   ref: FirestoreRefType
   unsubscribe: FuegoContextProps['removeListener']
   exists: null | boolean
+  refetch: () => void
 }
 
 export type HandleQueryData<

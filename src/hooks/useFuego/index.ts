@@ -74,7 +74,8 @@ function useFuego<DataModel extends DocumentModel>(
   const refetch = () => {
     if (listen) {
       console.error(
-        'It looks like you are trying to refetch a subscription in useFuego. Note that this will have no effect. To use refetch, set listen: false.'
+        'It looks like you are trying to refetch a subscription in useFuego. Note that this will have no effect, since the listener with automatically reconnect. To use refetch, set listen: false. This is related to the following query:',
+        query.path
       )
     } else {
       new FuegoQuery(query).handle<DataModel>({
@@ -98,7 +99,8 @@ function useFuego<DataModel extends DocumentModel>(
     db,
     ref: ref.current as FirestoreRefType,
     unsubscribe: unsubscribe.current as FuegoContextProps['removeListener'],
-    exists
+    exists,
+    refetch
   }
 }
 
