@@ -13,6 +13,9 @@ function useFuego<DataModel extends DocumentModel>(
     // path,
     listen = false
   } = query
+  const [exists, setExists] = useState<QueryHookResponse<DataModel>['exists']>(
+    null
+  )
   const {
     handleData,
     handleLoading,
@@ -52,7 +55,8 @@ function useFuego<DataModel extends DocumentModel>(
       setError,
       listenerNameRef: listenerName,
       dbRef: ref,
-      context
+      context,
+      setExists
     })
     if (listen) unsubscribe.current = () => removeListener(listenerName.current)
     return () => {
@@ -81,7 +85,8 @@ function useFuego<DataModel extends DocumentModel>(
         setError,
         listenerNameRef: listenerName,
         dbRef: ref,
-        context
+        context,
+        setExists
       })
     }
   }
@@ -92,7 +97,8 @@ function useFuego<DataModel extends DocumentModel>(
     error,
     db,
     ref: ref.current as FirestoreRefType,
-    unsubscribe: unsubscribe.current as FuegoContextProps['removeListener']
+    unsubscribe: unsubscribe.current as FuegoContextProps['removeListener'],
+    exists
   }
 }
 
