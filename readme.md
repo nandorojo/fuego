@@ -1,3 +1,5 @@
+Docs for this library are incomplete, but it works :) Make sure to wrap the app with the provider.
+
 # fuego
 
 🔥 Firebase Firestore hooks & components for React and React Native.
