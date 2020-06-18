@@ -1,3 +1,8 @@
+# This library has been moved to [@nandorojo/swr-firestore](https://github.com/nandorojo/swr-firestore). Use that instead. This repo is no longer maintained. 😇
+
+
+----
+
 Docs for this library are incomplete, but it works :) Make sure to wrap the app with the provider.
 
 # fuego
